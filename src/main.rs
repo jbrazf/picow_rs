@@ -78,15 +78,17 @@ fn main() -> ! {
     );
 
     // Set the LED to be an output
-    let mut led_pin = pins.led.into_push_pull_output();
+    let mut led_pin = pins.gpio3.into_push_pull_output();
 
     let mut led_pin2 = pins.gpio0.into_push_pull_output();
 
     // Blink the LED at 1 Hz
     loop {
         led_pin2.set_high().unwrap();
+        led_pin.set_high().unwrap();
         delay.delay_ms(500);
         led_pin2.set_low().unwrap();
+        led_pin.set_low().unwrap();
         delay.delay_ms(500);
     }
 }
