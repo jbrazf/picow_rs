@@ -117,18 +117,24 @@ fn main() -> ! {
 
     let timer = hal::Timer::new(pac.TIMER, &mut pac.RESETS);
 
-    let delay = (clocks.system_clock.freq().to_Hz() * 2) as u64;
+    let delay = clocks.system_clock.freq().to_Hz();
 
     let mut lap_start = timer.get_counter().ticks();
     let mut active = false;
     let mut i = 0;
+
+    
     // Blink the LED at 1 Hz
     loop {
         let current_tick = timer.get_counter().ticks();
+        write_to_serial(&mut serial, delay.into());
 
-        let _ = serial.write(b"Hello World!\r\n");
+        //let _ = serial.write(b"Hello World!\r\n");
         
-        write_to_serial(&mut serial, current_tick);
+        //if current_tick > lap_start + delay {
+        //    write_to_serial(&mut serial, 3)
+        //}
+        //write_to_serial(&mut serial, current_tick);
 
         // without this writing does not work...
         if usb_dev.poll(&mut [&mut serial]) {
@@ -140,12 +146,12 @@ fn main() -> ! {
 
 fn write_to_serial(serial_con: &mut SerialPort<hal::usb::UsbBus>, i: u64) {
     let mut text: String<64> = String::new();
-    let _ = writeln!(&mut text, "Write to serial: {}", i);
+    let _ = write!(&mut text, "Write to serial: {}\r\n", i);
     let _ = serial_con.write(text.as_bytes());
 }
 
 // End of file
-/*
+/* 250000000
 writeln!(&mut text, "Current timer ticks: {}", timer.get_counter().ticks()).unwrap();
         let _ = serial.write(text.as_bytes());
 
